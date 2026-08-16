@@ -14,7 +14,7 @@ pygame.display.set_caption("TRACK")
 
 clock = pygame.time.Clock()
 
-def project_point(x, y, z, camera_x, camera_y, camera_z):
+def project_point(x, y, z, camera_x, camera_y, camera_z, camera_yaw):
 
     focal_length = 500
 
@@ -23,12 +23,24 @@ def project_point(x, y, z, camera_x, camera_y, camera_z):
     relative_y = y - camera_y
     relative_z = z - camera_z
 
-    if relative_z <= 0.1:
+    yaw_radians = math.radians(camera_yaw)
+
+    rotated_x = (
+        relative_x * math.cos(yaw_radians)
+        - relative_z * math.sin(yaw_radians)
+    )
+
+    rotated_z = (
+        relative_x * math.sin(yaw_radians)
+        + relative_z * math.cos(yaw_radians)
+    )
+
+    if rotated_z <= 0.1:
         return None
 
     # 4. Perspective Projection
-    screen_x = WIDTH / 2 + (relative_x / relative_z) * focal_length
-    screen_y = HEIGHT / 2 - (relative_y / relative_z) * focal_length
+    screen_x = WIDTH / 2 + (rotated_x / rotated_z) * focal_length
+    screen_y = HEIGHT / 2 - (relative_y / rotated_z) * focal_length
 
     return int(screen_x), int(screen_y)
 
@@ -142,7 +154,8 @@ while running:
             vertex[2],
             player_x,
             player_y,
-            player_z
+            player_z,
+            player_yaw
         )
 
         projected_vertices.append(projected)
