@@ -105,11 +105,11 @@ while running:
 
     yaw_radians = math.radians(player_yaw)
 
-    forward_x = math.cos(yaw_radians)
-    forward_z = math.sin(yaw_radians)
+    forward_x = math.sin(yaw_radians)
+    forward_z = math.cos(yaw_radians)
 
-    right_x = -math.sin(yaw_radians)
-    right_z = math.cos(yaw_radians)
+    right_x = math.cos(yaw_radians)
+    right_z = -math.sin(yaw_radians)
 
     dt = clock.tick(60) / 1000
 
