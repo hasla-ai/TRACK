@@ -10,6 +10,9 @@ HEIGHT = 720
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("TRACK")
 
+pygame.mouse.set_visible(False)
+pygame.event.set_grab(True)
+pygame.mouse.set_pos((WIDTH // 2, HEIGHT // 2))
 
 
 clock = pygame.time.Clock()
@@ -131,10 +134,13 @@ while running:
 
 
     mouse_x, mouse_y = pygame.mouse.get_rel()
+
     player_pitch = max(-89.0, min(89.0, player_pitch))
 
     player_yaw += mouse_x * mouse_sensitivity
     player_pitch -= mouse_y * mouse_sensitivity
+
+    pygame.mouse.set_pos((WIDTH // 2, HEIGHT // 2))
 
     screen.fill((20, 20, 20))
 
