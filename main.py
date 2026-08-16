@@ -17,7 +17,7 @@ pygame.mouse.set_pos((WIDTH // 2, HEIGHT // 2))
 
 clock = pygame.time.Clock()
 
-def project_point(x, y, z, camera_x, camera_y, camera_z, camera_yaw):
+def project_point(x, y, z, camera_x, camera_y, camera_z, camera_yaw, camera_pitch):
 
     focal_length = 500
 
@@ -28,6 +28,7 @@ def project_point(x, y, z, camera_x, camera_y, camera_z, camera_yaw):
 
     yaw_radians = math.radians(camera_yaw)
 
+    # Yaw
     rotated_x = (
         relative_x * math.cos(yaw_radians)
         - relative_z * math.sin(yaw_radians)
@@ -38,12 +39,26 @@ def project_point(x, y, z, camera_x, camera_y, camera_z, camera_yaw):
         + relative_z * math.cos(yaw_radians)
     )
 
-    if rotated_z <= 0.1:
-        return None
+    # Pitch
+    pitch_radians = math.radians(-camera_pitch)
+
+    rotated_y = (
+        relative_y * math.cos(pitch_radians)
+        + rotated_z * math.sin(pitch_radians)
+    )
+
+    final_z = (
+        - relative_y * math.sin(pitch_radians)
+        + rotated_z * math.cos(pitch_radians)
+    )
+
+    if final_z <= 0.1:
+       return None
+
 
     # 4. Perspective Projection
-    screen_x = WIDTH / 2 + (rotated_x / rotated_z) * focal_length
-    screen_y = HEIGHT / 2 - (relative_y / rotated_z) * focal_length
+    screen_x = WIDTH / 2 + (rotated_x / final_z) * focal_length
+    screen_y = HEIGHT / 2 - (relative_y / final_z) * focal_length
 
     return int(screen_x), int(screen_y)
 
@@ -161,7 +176,8 @@ while running:
             player_x,
             player_y,
             player_z,
-            player_yaw
+            player_yaw,
+            player_pitch
         )
 
         projected_vertices.append(projected)
