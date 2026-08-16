@@ -53,13 +53,36 @@ camera_z = 0.0
 camera_yaw = 0.0
 
 running = True
-test_points = [
-    (-3.0, 0.0, 8.0),
-    (-1.0, 1.0, 6.0),
-    (0.0, 0.0, 10.0),
-    (2.0, 1.0, 7.0),
-    (4.0, 0.0, 12.0),
+
+cube_vertices = [
+    (-100, -100, 1000),
+    ( 100, -100, 1000),
+    ( 100,  100, 1000),
+    (-100,  100, 1000),
+
+    (-100, -100, 1200),
+    ( 100, -100, 1200),
+    ( 100,  100, 1200),
+    (-100,  100, 1200),
 ]
+
+cube_edges = [
+    (0, 1),
+    (1, 2),
+    (2, 3),
+    (3, 0),
+
+    (4, 5),
+    (5, 6),
+    (6, 7),
+    (7, 4),
+
+    (0, 4),
+    (1, 5),
+    (2, 6),
+    (3, 7),
+]
+
 while running:
 
     for event in pygame.event.get():
@@ -94,6 +117,7 @@ while running:
         player_x -= right_x * player_speed * dt
         player_z -= right_z * player_speed * dt
 
+
     mouse_x, mouse_y = pygame.mouse.get_rel()
     player_pitch = max(-89.0, min(89.0, player_pitch))
 
@@ -102,34 +126,41 @@ while running:
 
     screen.fill((20, 20, 20))
 
-    player = pygame.Rect(
-        int(player_x),
-        int(player_y),
-        player_width,
-        player_height
-    )
+#    player = pygame.Rect(
+#        int(player_x),
+#        int(player_y),
+#        player_width,
+#        player_height
+#    )
 
-    for point in test_points:
+    projected_vertices = []
 
+    for vertex in cube_vertices:
         projected = project_point(
-            point[0],
-            point[1],
-            point[2],
-            camera_x,
-            camera_y,
-            camera_z,
+            vertex[0],
+            vertex[1],
+            vertex[2],
+            player_x,
+            player_y,
+            player_z
         )
 
-        if projected is not None:
-            
-            pygame.draw.circle(
+        projected_vertices.append(projected)
+
+    for edge in cube_edges:
+        start = projected_vertices[edge[0]]
+        end = projected_vertices[edge[1]]
+
+        if start is not None and end is not None:
+            pygame.draw.line(
                 screen,
-                (255, 0, 0),
-                projected,
-                10
+                (255, 255, 255),
+                start,
+                end,
+                2
             )
 
-    pygame.draw.rect(screen, (255, 255, 255), player)
+#    pygame.draw.rect(screen, (255, 255, 255), player)
 
     position_text = font.render(
     f"Position: ({player_x:.1f}, {player_y:.1f}, {player_z:.1f})",
