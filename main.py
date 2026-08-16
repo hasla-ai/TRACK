@@ -17,18 +17,41 @@ pygame.mouse.set_pos((WIDTH // 2, HEIGHT // 2))
 
 clock = pygame.time.Clock()
 
-def project_point(x, y, z, camera_x, camera_y, camera_z, camera_yaw, camera_pitch):
+def clip_line_near_plane(point_a, point_b, near_z=0.1):
 
-    focal_length = 500
+    ax, ay, az = point_a
+    bx, by, bz = point_b
 
-     # 1. 카메라 기준 상대 위치
+    a_inside = az >= near_z
+    b_inside = bz >= near_z
+
+    if a_inside and b_inside:
+        return point_a, point_b
+
+    if not a_inside and not b_inside:
+        return None
+
+    t = (near_z - az) / (bz - az)
+
+    intersection = (
+        ax + t * (bx - ax),
+        ay + t * (by - ay),
+        near_z
+    )
+
+    if a_inside:
+        return point_a, intersection
+    else:
+        return intersection, point_b
+
+def world_to_camera(x, y, z, camera_x, camera_y, camera_z, camera_yaw, camera_pitch):
+
     relative_x = x - camera_x
     relative_y = y - camera_y
     relative_z = z - camera_z
 
     yaw_radians = math.radians(camera_yaw)
 
-    # Yaw
     rotated_x = (
         relative_x * math.cos(yaw_radians)
         - relative_z * math.sin(yaw_radians)
@@ -39,7 +62,6 @@ def project_point(x, y, z, camera_x, camera_y, camera_z, camera_yaw, camera_pitc
         + relative_z * math.cos(yaw_radians)
     )
 
-    # Pitch
     pitch_radians = math.radians(-camera_pitch)
 
     rotated_y = (
@@ -48,20 +70,36 @@ def project_point(x, y, z, camera_x, camera_y, camera_z, camera_yaw, camera_pitc
     )
 
     final_z = (
-        - relative_y * math.sin(pitch_radians)
+        -relative_y * math.sin(pitch_radians)
         + rotated_z * math.cos(pitch_radians)
     )
 
-    if final_z <= 0.1:
-       return None
+    return rotated_x, rotated_y, final_z
 
+def camera_to_screen(x, y, z):
 
-    # 4. Perspective Projection
-    screen_x = WIDTH / 2 + (rotated_x / final_z) * focal_length
-    screen_y = HEIGHT / 2 - (relative_y / final_z) * focal_length
+    focal_length = 500
+
+    if z <= 0.1:
+        return None
+
+    screen_x = WIDTH / 2 + (x / z) * focal_length
+    screen_y = HEIGHT / 2 - (y / z) * focal_length
 
     return int(screen_x), int(screen_y)
 
+def project_point(x, y, z, camera_x, camera_y, camera_z, camera_yaw, camera_pitch):
+    camera_point = world_to_camera(
+        x, y, z,
+        camera_x, camera_y, camera_z,
+        camera_yaw, camera_pitch
+    )
+
+    return camera_to_screen(
+        camera_point[0],
+        camera_point[1],
+        camera_point[2]
+    )
 font = pygame.font.Font(None, 36)   
 player_x = 0.0
 player_y = 0.0
@@ -112,6 +150,7 @@ cube_edges = [
     (2, 6),
     (3, 7),
 ]
+
 
 while running:
 
@@ -170,37 +209,58 @@ while running:
 #        player_height
 #    )
 
-    projected_vertices = []
+    camera_vertices = []
 
     for vertex in cube_vertices:
-        projected = project_point(
+
+        camera_point = world_to_camera(
             vertex[0],
             vertex[1],
             vertex[2],
-            player_x,
-            player_y,
-            player_z,
+            camera_x,
+            camera_y,
+            camera_z,
             player_yaw,
             player_pitch
         )
 
-        projected_vertices.append(projected)
+        camera_vertices.append(camera_point)
 
     for edge in cube_edges:
-        start = projected_vertices[edge[0]]
-        end = projected_vertices[edge[1]]
+        point_a = camera_vertices[edge[0]]
+        point_b = camera_vertices[edge[1]]
 
-        if start is not None and end is not None:
+        clipped_edge = clip_line_near_plane(
+            point_a,
+            point_b
+        )
+
+        if clipped_edge is None:
+            continue
+
+        clipped_a = camera_to_screen(
+            clipped_edge[0][0],
+            clipped_edge[0][1],
+            clipped_edge[0][2]
+        )
+
+        clipped_b = camera_to_screen(
+            clipped_edge[1][0],
+            clipped_edge[1][1],
+            clipped_edge[1][2]
+        )
+
+        if clipped_a is not None and clipped_b is not None:
+
             pygame.draw.line(
                 screen,
                 (255, 255, 255),
-                start,
-                end,
+                clipped_a,
+                clipped_b,
                 2
             )
 
 #    pygame.draw.rect(screen, (255, 255, 255), player)
-
     position_text = font.render(
     f"Position: ({player_x:.1f}, {player_y:.1f}, {player_z:.1f})",
     True,
