@@ -148,6 +148,10 @@ while running:
         player_z -= right_z * player_speed * dt
 
 
+    camera_x = player_x
+    camera_y = player_y
+    camera_z = player_z
+
     mouse_x, mouse_y = pygame.mouse.get_rel()
 
     player_pitch = max(-89.0, min(89.0, player_pitch))
