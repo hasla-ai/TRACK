@@ -23,6 +23,65 @@ class Vector3:
         self.y = y
         self.z = z
 
+    def __add__(self, other):
+        return Vector3(
+            self.x + other.x,
+            self.y + other.y,
+            self.z + other.z
+        )
+
+    def __sub__(self, other):
+        return Vector3(
+            self.x - other.x,
+            self.y - other.y,
+            self.z - other.z
+        )
+
+    def __mul__(self, scalar):
+        return Vector3(
+            self.x * scalar,
+            self.y * scalar,
+            self.z * scalar
+        )
+
+    def length(self):
+        return math.sqrt(
+            self.x * self.x +
+            self.y * self.y +
+            self.z * self.z
+        )
+    
+    def normalized(self):
+        length = self.length()
+
+        if length == 0:
+            return Vector3(0, 0, 0)
+
+        return Vector3(
+            self.x / length,
+            self.y / length,
+            self.z / length
+        )
+    
+    def dot(self, other):
+        return (
+            self.x * other.x +
+            self.y * other.y +
+            self.z * other.z
+        )
+    
+    def cross(self, other):
+        return Vector3(
+            self.y * other.z - self.z * other.y,
+            self.z * other.x - self.x * other.z,
+            self.x * other.y - self.y * other.x
+        )
+
+class Transform:
+    def __init__(self, position, rotation, scale):
+        self.position = position
+        self.rotation = rotation
+        self.scale = scale
 
 def clip_line_near_plane(point_a, point_b, near_z=0.1):
 
@@ -187,11 +246,11 @@ camera_yaw = 0.0
 
 running = True
 
-cube_transform = {
-    "position": Vector3(0, 0, 1000),
-    "scale": (2,1,1),
-    "rotation_y": 0.1
-}
+cube_transform = Transform(
+    Vector3(0, 0, 1000), 
+    Vector3(0, 0.1, 0),
+    Vector3(1, 1, 1)
+)
 
 cube_vertices = [
     (-100, -100, 1000),
@@ -311,20 +370,20 @@ while running:
 
     for vertex in cube_vertices:
 
-        scaled_x = vertex[0] * cube_transform["scale"][0]
-        scaled_y = vertex[1] * cube_transform["scale"][1]
-        scaled_z = vertex[2] * cube_transform["scale"][2]
+        scaled_x = vertex[0] * cube_transform.scale.x
+        scaled_y = vertex[1] * cube_transform.scale.y
+        scaled_z = vertex[2] * cube_transform.scale.z
 
         rotated = rotate_y(
             scaled_x,
             scaled_y,
             scaled_z,
-            cube_transform["rotation_y"]
+            cube_transform.rotation.y
         )
 
-        world_x = rotated[0] + cube_transform["position"].x
-        world_y = rotated[1] + cube_transform["position"].y
-        world_z = rotated[2] + cube_transform["position"].z
+        world_x = rotated[0] + cube_transform.position.x
+        world_y = rotated[1] + cube_transform.position.y
+        world_z = rotated[2] + cube_transform.position.z
 
         camera_point = world_to_camera(
             world_x,
