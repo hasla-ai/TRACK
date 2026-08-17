@@ -44,6 +44,49 @@ def clip_line_near_plane(point_a, point_b, near_z=0.1):
     else:
         return intersection, point_b
 
+def clip_polygon_near_plane(polygon, near_z=0.1):
+
+    clipped = []
+
+    for i in range(len(polygon)):
+
+        current = polygon[i]
+        previous = polygon[i - 1]
+
+        current_inside = current[2] >= near_z
+        previous_inside = previous[2] >= near_z
+
+        if current_inside and previous_inside:
+
+            clipped.append(current)
+
+        elif previous_inside and not current_inside:
+
+            t = (near_z - previous[2]) / (current[2] - previous[2])
+
+            intersection = (
+                previous[0] + t * (current[0] - previous[0]),
+                previous[1] + t * (current[1] - previous[1]),
+                near_z
+            )
+
+            clipped.append(intersection)
+
+        elif not previous_inside and current_inside:
+
+            t = (near_z - previous[2]) / (current[2] - previous[2])
+
+            intersection = (
+                previous[0] + t * (current[0] - previous[0]),
+                previous[1] + t * (current[1] - previous[1]),
+                near_z
+            )
+
+            clipped.append(intersection)
+            clipped.append(current)
+
+    return clipped
+
 def world_to_camera(x, y, z, camera_x, camera_y, camera_z, camera_yaw, camera_pitch):
 
     relative_x = x - camera_x
@@ -100,10 +143,15 @@ def project_point(x, y, z, camera_x, camera_y, camera_z, camera_yaw, camera_pitc
         camera_point[1],
         camera_point[2]
     )
+
 font = pygame.font.Font(None, 36)   
 player_x = 0.0
 player_y = 0.0
 player_z = 0.0
+
+player_vertical_velocity = 0.0
+gravity = 0.8
+jump_power = 12.0
 
 player_yaw = 0.0
 player_pitch = 0.0
@@ -151,12 +199,33 @@ cube_edges = [
     (3, 7),
 ]
 
+cube_faces = [
+    (0, 3, 2, 1),    # front  -Z
+    (4, 5, 6, 7),    # back   +Z
+    (0, 1, 5, 4),    # bottom -Y
+    (3, 7, 6, 2),    # top    +Y
+    (0, 4, 7, 3),    # left   -X
+    (1, 2, 6, 5),    # right  +X
+]
+
+face_colors = [
+    (255, 0, 0),      # 0: Red
+    (0, 255, 0),      # 1: Green
+    (0, 0, 255),      # 2: Blue
+    (255, 255, 0),    # 3: Yellow
+    (255, 0, 255),    # 4: Magenta
+    (0, 255, 255),    # 5: Cyan
+]
 
 while running:
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                player_vertical_velocity = jump_power
 
     keys = pygame.key.get_pressed()
 
@@ -167,6 +236,9 @@ while running:
 
     right_x = math.cos(yaw_radians)
     right_z = -math.sin(yaw_radians)
+
+    player_vertical_velocity -= gravity
+    player_y += player_vertical_velocity
 
     dt = clock.tick(60) / 1000
 
@@ -186,6 +258,9 @@ while running:
         player_x -= right_x * player_speed * dt
         player_z -= right_z * player_speed * dt
 
+    if player_y < 0:
+        player_y = 0
+        player_vertical_velocity = 0
 
     camera_x = player_x
     camera_y = player_y
@@ -225,6 +300,81 @@ while running:
         )
 
         camera_vertices.append(camera_point)
+
+    camera_faces = []
+
+    for face in cube_faces:
+
+        camera_face = []
+
+        for vertex_index in face:
+            camera_face.append(
+                camera_vertices[vertex_index]
+            )
+
+        camera_faces.append(camera_face)
+
+    def is_front_face(face):
+
+        if len(face) < 3:
+            return False
+
+        a = face[0]
+        b = face[1]
+        c = face[2]
+
+        ab = (
+            b[0] - a[0],
+            b[1] - a[1],
+            b[2] - a[2]
+        )
+
+        ac = (
+            c[0] - a[0],
+            c[1] - a[1],
+            c[2] - a[2]
+        )
+
+        normal = (
+            ab[1] * ac[2] - ab[2] * ac[1],
+            ab[2] * ac[0] - ab[0] * ac[2],
+            ab[0] * ac[1] - ab[1] * ac[0]
+        )
+
+        dot = normal[0] * (-a[0]) + \
+            normal[1] * (-a[1]) + \
+            normal[2] * (-a[2])
+
+        return dot > 0
+
+    for face_index, face in enumerate(camera_faces):
+       
+        if not is_front_face(face):
+            continue
+
+        clipped_face = clip_polygon_near_plane(face)
+
+        screen_face = []
+
+        for point in clipped_face:
+
+            projected = camera_to_screen(
+                point[0],
+                point[1],
+                point[2]
+            )
+
+            if projected is not None:
+                screen_face.append(projected)
+
+        if len(screen_face) >= 3:
+
+            pygame.draw.polygon(
+                screen,
+                face_colors[face_index],
+                screen_face
+            )
+
 
     for edge in cube_edges:
         point_a = camera_vertices[edge[0]]
