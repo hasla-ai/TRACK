@@ -17,6 +17,13 @@ pygame.mouse.set_pos((WIDTH // 2, HEIGHT // 2))
 
 clock = pygame.time.Clock()
 
+class Vector3:
+    def __init__(self, x, y, z):
+        self.x = x
+        self.y = y
+        self.z = z
+
+
 def clip_line_near_plane(point_a, point_b, near_z=0.1):
 
     ax, ay, az = point_a
@@ -181,9 +188,9 @@ camera_yaw = 0.0
 running = True
 
 cube_transform = {
-    "position": (0, 0, 1000),
-    "rotation_y": 0.1,
-    "scale": (1,1,1)
+    "position": Vector3(0, 0, 1000),
+    "scale": (2,1,1),
+    "rotation_y": 0.1
 }
 
 cube_vertices = [
@@ -315,9 +322,9 @@ while running:
             cube_transform["rotation_y"]
         )
 
-        world_x = rotated[0] + cube_transform["position"][0]
-        world_y = rotated[1] + cube_transform["position"][1]
-        world_z = rotated[2] + cube_transform["position"][2]
+        world_x = rotated[0] + cube_transform["position"].x
+        world_y = rotated[1] + cube_transform["position"].y
+        world_z = rotated[2] + cube_transform["position"].z
 
         camera_point = world_to_camera(
             world_x,
