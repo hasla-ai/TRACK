@@ -182,7 +182,8 @@ running = True
 
 cube_transform = {
     "position": (0, 0, 1000),
-    "rotation_y": 0.1
+    "rotation_y": 0.1,
+    "scale": (1,1,1)
 }
 
 cube_vertices = [
@@ -303,10 +304,14 @@ while running:
 
     for vertex in cube_vertices:
 
+        scaled_x = vertex[0] * cube_transform["scale"][0]
+        scaled_y = vertex[1] * cube_transform["scale"][1]
+        scaled_z = vertex[2] * cube_transform["scale"][2]
+
         rotated = rotate_y(
-            vertex[0],
-            vertex[1],
-            vertex[2],
+            scaled_x,
+            scaled_y,
+            scaled_z,
             cube_transform["rotation_y"]
         )
 
