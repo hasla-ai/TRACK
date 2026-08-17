@@ -87,6 +87,16 @@ def clip_polygon_near_plane(polygon, near_z=0.1):
 
     return clipped
 
+def rotate_y(x, y, z, angle):
+    cos_a = math.cos(angle)
+    sin_a = math.sin(angle)
+
+    rotated_x = x * cos_a - z * sin_a
+    rotated_y = y
+    rotated_z = x * sin_a + z * cos_a
+
+    return rotated_x, rotated_y, rotated_z
+
 def world_to_camera(x, y, z, camera_x, camera_y, camera_z, camera_yaw, camera_pitch):
 
     relative_x = x - camera_x
@@ -171,6 +181,7 @@ camera_yaw = 0.0
 running = True
 
 cube_position = (0, 0, 1000)
+cube_rotation_y = 0.1
 
 cube_vertices = [
     (-100, -100, 1000),
@@ -290,14 +301,21 @@ while running:
 
     for vertex in cube_vertices:
 
-        world_x = vertex[0] + cube_position[0]
-        world_y = vertex[1] + cube_position[1]
-        world_z = vertex[2] + cube_position[2]
-
-        camera_point = world_to_camera(
+        rotated = rotate_y(
             vertex[0],
             vertex[1],
             vertex[2],
+            cube_rotation_y
+        )
+
+        world_x = rotated[0] + cube_position[0]
+        world_y = rotated[1] + cube_position[1]
+        world_z = rotated[2] + cube_position[2]
+
+        camera_point = world_to_camera(
+            world_x,
+            world_y,
+            world_z,
             camera_x,
             camera_y,
             camera_z,
