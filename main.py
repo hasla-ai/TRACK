@@ -83,6 +83,39 @@ class Transform:
         self.rotation = rotation
         self.scale = scale
 
+
+font = pygame.font.Font(None, 36)   
+player_x = 0.0
+player_y = 0.0
+player_z = 0.0
+
+player_vertical_velocity = 0.0
+gravity = 0.8
+jump_power = 12.0
+
+player_yaw = 0.0
+player_pitch = 0.0
+
+player_width = 50
+player_height = 50
+
+player_speed = 300
+
+mouse_sensitivity = 0.2
+
+running = True
+
+camera_x = 0.0
+camera_y = 0.0
+camera_z = 0.0
+camera_yaw = 0.0
+
+camera_transform = Transform(
+    Vector3(camera_x, camera_y, camera_z),
+    Vector3(player_pitch, player_yaw, 0),
+    Vector3(1, 1, 1)
+)
+
 def clip_line_near_plane(point_a, point_b, near_z=0.1):
 
     ax, ay, az = point_a
@@ -220,31 +253,6 @@ def project_point(x, y, z, camera_x, camera_y, camera_z, camera_yaw, camera_pitc
         camera_point[2]
     )
 
-font = pygame.font.Font(None, 36)   
-player_x = 0.0
-player_y = 0.0
-player_z = 0.0
-
-player_vertical_velocity = 0.0
-gravity = 0.8
-jump_power = 12.0
-
-player_yaw = 0.0
-player_pitch = 0.0
-
-player_width = 50
-player_height = 50
-
-player_speed = 300
-
-mouse_sensitivity = 0.2
-
-camera_x = 0.0
-camera_y = 0.0
-camera_z = 0.0
-camera_yaw = 0.0
-
-running = True
 
 cube_transform = Transform(
     Vector3(0, 0, 1000), 
@@ -355,6 +363,9 @@ while running:
     player_yaw += mouse_x * mouse_sensitivity
     player_pitch -= mouse_y * mouse_sensitivity
 
+    camera_transform.rotation.x = player_pitch
+    camera_transform.rotation.y = player_yaw
+
     pygame.mouse.set_pos((WIDTH // 2, HEIGHT // 2))
 
     screen.fill((20, 20, 20))
@@ -392,8 +403,8 @@ while running:
             camera_x,
             camera_y,
             camera_z,
-            player_yaw,
-            player_pitch
+            camera_transform.rotation.y,
+            camera_transform.rotation.x
         )
 
         camera_vertices.append(camera_point)
