@@ -356,6 +356,10 @@ while running:
     camera_y = player_y
     camera_z = player_z
 
+    camera_transform.position.x = camera_x
+    camera_transform.position.y = camera_y
+    camera_transform.position.z = camera_z
+
     mouse_x, mouse_y = pygame.mouse.get_rel()
 
     player_pitch = max(-89.0, min(89.0, player_pitch))
@@ -400,9 +404,9 @@ while running:
             world_x,
             world_y,
             world_z,
-            camera_x,
-            camera_y,
-            camera_z,
+            camera_transform.position.x,
+            camera_transform.position.y,
+            camera_transform.position.z,
             camera_transform.rotation.y,
             camera_transform.rotation.x
         )
