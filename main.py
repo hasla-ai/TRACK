@@ -170,6 +170,8 @@ camera_yaw = 0.0
 
 running = True
 
+cube_position = (0, 0, 1000)
+
 cube_vertices = [
     (-100, -100, 1000),
     ( 100, -100, 1000),
@@ -287,6 +289,10 @@ while running:
     camera_vertices = []
 
     for vertex in cube_vertices:
+
+        world_x = vertex[0] + cube_position[0]
+        world_y = vertex[1] + cube_position[1]
+        world_z = vertex[2] + cube_position[2]
 
         camera_point = world_to_camera(
             vertex[0],
