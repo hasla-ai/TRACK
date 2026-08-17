@@ -180,8 +180,10 @@ camera_yaw = 0.0
 
 running = True
 
-cube_position = (0, 0, 1000)
-cube_rotation_y = 0.1
+cube_transform = {
+    "position": (0, 0, 1000),
+    "rotation_y": 0.1
+}
 
 cube_vertices = [
     (-100, -100, 1000),
@@ -305,12 +307,12 @@ while running:
             vertex[0],
             vertex[1],
             vertex[2],
-            cube_rotation_y
+            cube_transform["rotation_y"]
         )
 
-        world_x = rotated[0] + cube_position[0]
-        world_y = rotated[1] + cube_position[1]
-        world_z = rotated[2] + cube_position[2]
+        world_x = rotated[0] + cube_transform["position"][0]
+        world_y = rotated[1] + cube_transform["position"][1]
+        world_z = rotated[2] + cube_transform["position"][2]
 
         camera_point = world_to_camera(
             world_x,
