@@ -110,6 +110,12 @@ camera_y = 0.0
 camera_z = 0.0
 camera_yaw = 0.0
 
+player_transform = Transform(
+    Vector3(0, 0, 0),
+    Vector3(player_pitch, player_yaw, 0),
+    Vector3(1, 1, 1)
+)
+
 camera_transform = Transform(
     Vector3(camera_x, camera_y, camera_z),
     Vector3(player_pitch, player_yaw, 0),
@@ -356,9 +362,13 @@ while running:
     camera_y = player_y
     camera_z = player_z
 
-    camera_transform.position.x = camera_x
-    camera_transform.position.y = camera_y
-    camera_transform.position.z = camera_z
+    player_transform.position.x = camera_x
+    player_transform.position.y = camera_y
+    player_transform.position.z = camera_z
+
+    camera_transform.position.x = player_transform.position.x
+    camera_transform.position.y = player_transform.position.y
+    camera_transform.position.z = player_transform.position.z
 
     mouse_x, mouse_y = pygame.mouse.get_rel()
 
@@ -369,6 +379,9 @@ while running:
 
     camera_transform.rotation.x = player_pitch
     camera_transform.rotation.y = player_yaw
+
+    player_transform.rotation.x = player_pitch
+    player_transform.rotation.y = player_yaw
 
     pygame.mouse.set_pos((WIDTH // 2, HEIGHT // 2))
 
