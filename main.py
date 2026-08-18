@@ -142,10 +142,10 @@ player_transform = Transform(
 )
 
 camera_transform = Transform(
-    Vector3(0, 0, 0),
-    Vector3(0, 0, 0),
-    Vector3(1, 1, 1),
-    parent=player_transform
+    Vector3(0, 2, 0), # position
+    Vector3(0, 0, 0), # rotation
+    Vector3(1, 1, 1), # scale
+    parent=player_transform # parent
 )
 
 def clip_line_near_plane(point_a, point_b, near_z=0.1):
