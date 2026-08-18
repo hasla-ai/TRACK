@@ -279,12 +279,11 @@ def camera_to_screen(x, y, z):
 
     return int(screen_x), int(screen_y)
 
-def project_point(x, y, z, camera_position, camera_yaw, camera_pitch):
+def project_point(x, y, z, camera_position, camera_rotation):
     camera_point = world_to_camera(
         x, y, z,
         camera_position,
-        camera_yaw,
-        camera_pitch
+        camera_rotation
     )
 
     return camera_to_screen(
