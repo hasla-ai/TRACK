@@ -397,8 +397,6 @@ while running:
     player_pitch -= mouse_y * mouse_sensitivity
 
     camera_transform.rotation.x = player_pitch
-    camera_transform.rotation.y = 0
-
     player_transform.rotation.y = player_yaw
     
     pygame.mouse.set_pos((WIDTH // 2, HEIGHT // 2))
