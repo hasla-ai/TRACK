@@ -110,9 +110,6 @@ class Transform:
         return self.parent.get_world_rotation() + self.rotation
 
 font = pygame.font.Font(None, 36)   
-player_x = 0.0
-player_y = 0.0
-player_z = 0.0
 
 player_vertical_velocity = 0.0
 gravity = 0.8
@@ -365,33 +362,29 @@ while running:
     right_z = -math.sin(yaw_radians)
 
     player_vertical_velocity -= gravity
-    player_y += player_vertical_velocity
+    player_transform.position.y += player_vertical_velocity
 
     dt = clock.tick(60) / 1000
 
     if keys[pygame.K_w]:
-        player_x += forward_x * player_speed * dt
-        player_z += forward_z * player_speed * dt
+        player_transform.position.x += forward_x * player_speed * dt
+        player_transform.position.z += forward_z * player_speed * dt
 
     if keys[pygame.K_s]:
-        player_x -= forward_x * player_speed * dt
-        player_z -= forward_z * player_speed * dt
+        player_transform.position.x -= forward_x * player_speed * dt
+        player_transform.position.z -= forward_z * player_speed * dt
 
     if keys[pygame.K_d]:
-        player_x += right_x * player_speed * dt
-        player_z += right_z * player_speed * dt
+        player_transform.position.x += right_x * player_speed * dt
+        player_transform.position.z += right_z * player_speed * dt
 
     if keys[pygame.K_a]:
-        player_x -= right_x * player_speed * dt
-        player_z -= right_z * player_speed * dt
+        player_transform.position.x -= right_x * player_speed * dt
+        player_transform.position.z -= right_z * player_speed * dt
 
-    if player_y < 0:
-        player_y = 0
+    if player_transform.position.y < 0:
+        player_transform.position.y = 0
         player_vertical_velocity = 0
-
-    player_transform.position.x = player_x
-    player_transform.position.y = player_y
-    player_transform.position.z = player_z
 
     camera_world_position = camera_transform.get_world_position()
     camera_world_rotation = camera_transform.get_world_rotation()
@@ -560,7 +553,9 @@ while running:
 
 #    pygame.draw.rect(screen, (255, 255, 255), player)
     position_text = font.render(
-    f"Position: ({player_x:.1f}, {player_y:.1f}, {player_z:.1f})",
+    f"Position: ({player_transform.position.x:.1f}, "
+    f"{player_transform.position.y:.1f}, "
+    f"{player_transform.position.z:.1f})",
     True,
     (255, 255, 255)
 )
