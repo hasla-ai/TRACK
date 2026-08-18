@@ -78,11 +78,17 @@ class Vector3:
         )
 
 class Transform:
-    def __init__(self, position, rotation, scale):
+    def __init__(self, position, rotation, scale, parent=None):
         self.position = position
         self.rotation = rotation
         self.scale = scale
+        self.parent = parent
 
+    def get_world_position(self):
+        if self.parent is None:
+            return self.position
+
+        return self.parent.get_world_position() + self.position
 
 font = pygame.font.Font(None, 36)   
 player_x = 0.0
@@ -119,7 +125,8 @@ player_transform = Transform(
 camera_transform = Transform(
     Vector3(camera_x, camera_y, camera_z),
     Vector3(player_pitch, player_yaw, 0),
-    Vector3(1, 1, 1)
+    Vector3(1, 1, 1),
+    parent=player_transform
 )
 
 def clip_line_near_plane(point_a, point_b, near_z=0.1):
@@ -366,9 +373,11 @@ while running:
     player_transform.position.y = camera_y
     player_transform.position.z = camera_z
 
-    camera_transform.position.x = player_transform.position.x
-    camera_transform.position.y = player_transform.position.y
-    camera_transform.position.z = player_transform.position.z
+    camera_world_position = camera_transform.get_world_position()
+
+    camera_world_position.x = player_transform.position.x
+    camera_world_position.y = player_transform.position.y
+    camera_world_position.z = player_transform.position.z
 
     mouse_x, mouse_y = pygame.mouse.get_rel()
 
@@ -417,9 +426,9 @@ while running:
             world_x,
             world_y,
             world_z,
-            camera_transform.position.x,
-            camera_transform.position.y,
-            camera_transform.position.z,
+            camera_world_position.x,
+            camera_world_position.y,
+            camera_world_position.z,
             camera_transform.rotation.y,
             camera_transform.rotation.x
         )
