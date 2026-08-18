@@ -109,6 +109,25 @@ class Transform:
 
         return self.parent.get_world_rotation() + self.rotation
 
+    def transform_point(self, point):
+        scaled_x = point.x * self.scale.x
+        scaled_y = point.y * self.scale.y
+        scaled_z = point.z * self.scale.z
+
+        rotated = rotate_y(
+            scaled_x,
+            scaled_y,
+            scaled_z,
+            math.radians(self.rotation.y)
+        )
+
+        return Vector3(
+            rotated[0] + self.position.x,
+            rotated[1] + self.position.y,
+            rotated[2] + self.position.z
+        )
+
+
 font = pygame.font.Font(None, 36)   
 
 player_vertical_velocity = 0.0
@@ -410,20 +429,16 @@ while running:
 
     for vertex in cube_vertices:
 
-        scaled_x = vertex[0] * cube_transform.scale.x
-        scaled_y = vertex[1] * cube_transform.scale.y
-        scaled_z = vertex[2] * cube_transform.scale.z
-
-        rotated = rotate_y(
-            scaled_x,
-            scaled_y,
-            scaled_z,
-            math.radians(cube_transform.rotation.y)
+        local_point = Vector3(
+            vertex[0],
+            vertex[1],
+            vertex[2]
         )
+        world_point = cube_transform.transform_point(local_point)
 
-        world_x = rotated[0] + cube_transform.position.x
-        world_y = rotated[1] + cube_transform.position.y
-        world_z = rotated[2] + cube_transform.position.z
+        world_x = world_point.x
+        world_y = world_point.y
+        world_z = world_point.z
 
         camera_point = world_to_camera(
             world_x,

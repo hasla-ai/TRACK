@@ -111,3 +111,13 @@ Rotation
       ↓
 World Coordinate
 
+
+Vertex tuple
+    ↓
+Vector3
+    ↓
+cube_transform.transform_point()
+    ↓
+World Point
+    ↓
+world_to_camera() 로 변환
