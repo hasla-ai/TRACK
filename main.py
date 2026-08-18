@@ -228,6 +228,16 @@ def rotate_y(x, y, z, angle):
 
     return rotated_x, rotated_y, rotated_z
 
+def rotate_x(x, y, z, angle):
+    cos_a = math.cos(angle)
+    sin_a = math.sin(angle)
+
+    rotated_x = x
+    rotated_y = y * cos_a - z * sin_a
+    rotated_z = y * sin_a + z * cos_a
+
+    return rotated_x, rotated_y, rotated_z
+
 def world_to_camera(x, y, z, camera_x, camera_y, camera_z, camera_yaw, camera_pitch):
 
     relative_x = x - camera_x
