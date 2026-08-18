@@ -116,7 +116,6 @@ gravity = 0.8
 jump_power = 12.0
 
 player_yaw = 0.0
-player_pitch = 0.0
 
 player_width = 50
 player_height = 50
@@ -392,7 +391,7 @@ while running:
     mouse_x, mouse_y = pygame.mouse.get_rel()
 
     player_yaw += mouse_x * mouse_sensitivity
-    
+
     camera_transform.rotation.x -= mouse_y * mouse_sensitivity
 
     camera_transform.rotation.x = max(-89.0, min(89.0, camera_transform.rotation.x))
