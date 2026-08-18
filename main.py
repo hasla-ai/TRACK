@@ -87,9 +87,22 @@ class Transform:
     def get_world_position(self):
         if self.parent is None:
             return self.position
+        parent_position = self.parent.get_world_position()
+        parent_rotation = self.parent.get_world_rotation()
 
-        return self.parent.get_world_position() + self.position
+        rotated_x, rotated_y, rotated_z = rotate_y(
+            self.position.x,
+            self.position.y,
+            self.position.z,
+            parent_rotation.y
+        )
 
+        return parent_position + Vector3(
+            rotated_x,
+            rotated_y,
+            rotated_z
+        )
+    
     def get_world_rotation(self):
         if self.parent is None:
             return self.rotation
