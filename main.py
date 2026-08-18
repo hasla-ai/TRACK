@@ -137,7 +137,7 @@ camera_yaw = 0.0
 
 player_transform = Transform(
     Vector3(0, 0, 0),
-    Vector3(player_pitch, player_yaw, 0),
+    Vector3(0, player_yaw, 0),
     Vector3(1, 1, 1)
 )
 
@@ -361,7 +361,7 @@ while running:
 
     keys = pygame.key.get_pressed()
 
-    yaw_radians = math.radians(player_yaw)
+    yaw_radians = math.radians(player_transform.rotation.y)
 
     forward_x = math.sin(yaw_radians)
     forward_z = math.cos(yaw_radians)
@@ -416,7 +416,7 @@ while running:
     camera_transform.rotation.y = 0
 
     player_transform.rotation.y = player_yaw
-    player_transform.rotation.x = player_pitch
+    camera_transform.rotation.x = player_pitch
 
     pygame.mouse.set_pos((WIDTH // 2, HEIGHT // 2))
 
