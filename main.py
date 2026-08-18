@@ -130,9 +130,6 @@ mouse_sensitivity = 0.2
 
 running = True
 
-camera_x = 0.0
-camera_y = 0.0
-camera_z = 0.0
 camera_yaw = 0.0
 
 player_transform = Transform(
@@ -394,13 +391,9 @@ while running:
         player_y = 0
         player_vertical_velocity = 0
 
-    camera_x = player_x
-    camera_y = player_y
-    camera_z = player_z
-
-    player_transform.position.x = camera_x
-    player_transform.position.y = camera_y
-    player_transform.position.z = camera_z
+    player_transform.position.x = player_x
+    player_transform.position.y = player_y
+    player_transform.position.z = player_z
 
     camera_world_position = camera_transform.get_world_position()
     camera_world_rotation = camera_transform.get_world_rotation()
