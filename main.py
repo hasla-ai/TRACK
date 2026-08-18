@@ -235,11 +235,11 @@ def rotate_x(x, y, z, angle):
 
     return rotated_x, rotated_y, rotated_z
 
-def world_to_camera(x, y, z, camera_x, camera_y, camera_z, camera_yaw, camera_pitch):
+def world_to_camera(x, y, z, camera_position, camera_yaw, camera_pitch):
 
-    relative_x = x - camera_x
-    relative_y = y - camera_y
-    relative_z = z - camera_z
+    relative_x = x - camera_position.x
+    relative_y = y - camera_position.y
+    relative_z = z - camera_position.z
 
     yaw_radians = math.radians(camera_yaw)
 
@@ -279,11 +279,12 @@ def camera_to_screen(x, y, z):
 
     return int(screen_x), int(screen_y)
 
-def project_point(x, y, z, camera_x, camera_y, camera_z, camera_yaw, camera_pitch):
+def project_point(x, y, z, camera_position, camera_yaw, camera_pitch):
     camera_point = world_to_camera(
         x, y, z,
-        camera_x, camera_y, camera_z,
-        camera_yaw, camera_pitch
+        camera_position,
+        camera_yaw,
+        camera_pitch
     )
 
     return camera_to_screen(
@@ -445,9 +446,7 @@ while running:
             world_x,
             world_y,
             world_z,
-            camera_world_position.x,
-            camera_world_position.y,
-            camera_world_position.z,
+            camera_world_position,
             camera_world_rotation.y,
             camera_world_rotation.x
         )
