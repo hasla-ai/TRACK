@@ -228,6 +228,7 @@ def rotate_x(x, y, z, angle):
     return rotated_x, rotated_y, rotated_z
 
 def world_to_camera(x, y, z, camera_position, camera_rotation):
+    # World Position -> Camera Position 빼기 -> Camera Yaw 회전 -> Camera Pitch 회전 ->  Camera Space
 
     relative_x = x - camera_position.x
     relative_y = y - camera_position.y
@@ -272,6 +273,7 @@ def camera_to_screen(x, y, z):
     return int(screen_x), int(screen_y)
 
 def project_point(x, y, z, camera_position, camera_rotation):
+    ## Camera Transform 정보를 그대로 전달, 그 이후 Projection 담당
     camera_point = world_to_camera(
         x, y, z,
         camera_position,
@@ -416,7 +418,7 @@ while running:
             scaled_x,
             scaled_y,
             scaled_z,
-            cube_transform.rotation.y
+            math.radians(cube_transform.rotation.y)
         )
 
         world_x = rotated[0] + cube_transform.position.x
