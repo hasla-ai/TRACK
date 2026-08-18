@@ -130,8 +130,6 @@ mouse_sensitivity = 0.2
 
 running = True
 
-camera_yaw = 0.0
-
 player_transform = Transform(
     Vector3(0, 0, 0),
     Vector3(0, player_yaw, 0),
