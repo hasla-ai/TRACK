@@ -400,8 +400,7 @@ while running:
     camera_transform.rotation.y = 0
 
     player_transform.rotation.y = player_yaw
-    camera_transform.rotation.x = player_pitch
-
+    
     pygame.mouse.set_pos((WIDTH // 2, HEIGHT // 2))
 
     screen.fill((20, 20, 20))
