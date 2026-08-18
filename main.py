@@ -90,6 +90,12 @@ class Transform:
 
         return self.parent.get_world_position() + self.position
 
+    def get_world_rotation(self):
+        if self.parent is None:
+            return self.rotation
+
+        return self.parent.get_world_rotation() + self.rotation
+
 font = pygame.font.Font(None, 36)   
 player_x = 0.0
 player_y = 0.0
@@ -374,6 +380,7 @@ while running:
     player_transform.position.z = camera_z
 
     camera_world_position = camera_transform.get_world_position()
+    camera_world_rotation = camera_transform.get_world_rotation()
 
     camera_world_position.x = player_transform.position.x
     camera_world_position.y = player_transform.position.y
@@ -429,8 +436,8 @@ while running:
             camera_world_position.x,
             camera_world_position.y,
             camera_world_position.z,
-            camera_transform.rotation.y,
-            camera_transform.rotation.x
+            camera_world_rotation.y,
+            camera_world_rotation.x
         )
 
         camera_vertices.append(camera_point)
