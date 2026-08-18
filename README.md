@@ -28,6 +28,15 @@ Camera Transform
 └── rotation
     └── X = 실제 Pitch 상태
 
+정리하면 카메라는
+
+Player Transform
+      ↓
+Camera Transform
+      ↓
+Camera World Position / Rotation
+      ↓
+World → Camera
 
 그리고 렌더링:
 
@@ -36,6 +45,24 @@ Camera Transform
    └── World Rotation
           ↓
    world_to_camera()
+
+자세히연
+
+Cube Vertex
+   ↓
+Local Scale
+   ↓
+Local Y Rotation
+   ↓
+World Position
+   ↓
+Camera World Transform
+   ↓
+World → Camera
+   ↓
+Camera → Screen
+   ↓
+Screen
 
 
 상태변수 제거
@@ -69,3 +96,18 @@ Transform.rotation
         │
         ↓
 sin / cos
+
+
+vertex: 
+Transform 시스템을 제대로 쓰려면 Vertex는 원점 기준 Local 좌표가 되어야.
+
+Local Vertex
+      ↓
+Scale
+      ↓
+Rotation
+      ↓
++ Transform Position (0,0,1000)
+      ↓
+World Coordinate
+
