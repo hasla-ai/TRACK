@@ -90,11 +90,11 @@ class Transform:
         parent_position = self.parent.get_world_position()
         parent_rotation = self.parent.get_world_rotation()
 
-        rotated_x, rotated_y, rotated_z = rotate_x(
+        rotated_x, rotated_y, rotated_z = rotate_y(
             self.position.x,
             self.position.y,
             self.position.z,
-            parent_rotation.y
+            math.radians(parent_rotation.y)
         )
 
         return parent_position + Vector3(
