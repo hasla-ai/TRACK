@@ -395,10 +395,6 @@ while running:
     camera_world_position = camera_transform.get_world_position()
     camera_world_rotation = camera_transform.get_world_rotation()
 
-    camera_world_position.x = player_transform.position.x
-    camera_world_position.y = player_transform.position.y
-    camera_world_position.z = player_transform.position.z
-
     mouse_x, mouse_y = pygame.mouse.get_rel()
 
     player_pitch = max(-89.0, min(89.0, player_pitch))
