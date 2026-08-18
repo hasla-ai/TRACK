@@ -557,6 +557,7 @@ while running:
     (255, 255, 255)
 )
 
+
     screen.blit(position_text, (20, 20))
     screen.blit(rotation_text, (20, 55))
 

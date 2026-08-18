@@ -57,3 +57,15 @@ Player World Position
 Camera Local Position (0, 2, 0)
         ↓
 Camera World Position
+
+
+
+
+Transform.rotation
+        │
+        │ degree
+        ↓
+   계산 직전 radians 변환
+        │
+        ↓
+sin / cos
