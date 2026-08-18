@@ -391,12 +391,12 @@ while running:
 
     mouse_x, mouse_y = pygame.mouse.get_rel()
 
-    player_pitch = max(-89.0, min(89.0, player_pitch))
-
     player_yaw += mouse_x * mouse_sensitivity
-    player_pitch -= mouse_y * mouse_sensitivity
+    
+    camera_transform.rotation.x -= mouse_y * mouse_sensitivity
 
-    camera_transform.rotation.x = player_pitch
+    camera_transform.rotation.x = max(-89.0, min(89.0, camera_transform.rotation.x))
+
     player_transform.rotation.y = player_yaw
     
     pygame.mouse.set_pos((WIDTH // 2, HEIGHT // 2))
@@ -558,7 +558,7 @@ while running:
 )
 
     rotation_text = font.render(
-    f"Yaw: {player_yaw:.1f}  Pitch: {player_pitch:.1f}",
+    f"Yaw: {player_yaw:.1f}  Pitch: {camera_transform.rotation.x:.1f}",
     True,
     (255, 255, 255)
 )
