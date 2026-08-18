@@ -235,13 +235,13 @@ def rotate_x(x, y, z, angle):
 
     return rotated_x, rotated_y, rotated_z
 
-def world_to_camera(x, y, z, camera_position, camera_yaw, camera_pitch):
+def world_to_camera(x, y, z, camera_position, camera_rotation):
 
     relative_x = x - camera_position.x
     relative_y = y - camera_position.y
     relative_z = z - camera_position.z
 
-    yaw_radians = math.radians(camera_yaw)
+    yaw_radians = math.radians(camera_rotation.y)
 
     rotated_x = (
         relative_x * math.cos(yaw_radians)
@@ -253,7 +253,7 @@ def world_to_camera(x, y, z, camera_position, camera_yaw, camera_pitch):
         + relative_z * math.cos(yaw_radians)
     )
 
-    pitch_radians = math.radians(-camera_pitch)
+    pitch_radians = math.radians(-camera_rotation.x)
 
     rotated_y = (
         relative_y * math.cos(pitch_radians)
@@ -447,8 +447,7 @@ while running:
             world_y,
             world_z,
             camera_world_position,
-            camera_world_rotation.y,
-            camera_world_rotation.x
+            camera_world_rotation
         )
 
         camera_vertices.append(camera_point)
