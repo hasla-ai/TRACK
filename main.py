@@ -142,8 +142,8 @@ player_transform = Transform(
 )
 
 camera_transform = Transform(
-    Vector3(camera_x, camera_y, camera_z),
-    Vector3(player_pitch, player_yaw, 0),
+    Vector3(0, 0, 0),
+    Vector3(0, 0, 0),
     Vector3(1, 1, 1),
     parent=player_transform
 )
