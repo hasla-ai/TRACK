@@ -409,6 +409,14 @@ while running:
         player_vertical_velocity = 0
 
     camera_world_position = camera_transform.get_world_position()
+    camera_test_position = camera_transform.transform_point(
+        Vector3(0, 0, 0) # Camera의 Local Origin → World를 계산
+    )
+    assert ( # Camera Local Origin -> transform_point -> Parent(Player) -> World Position 경로 확인
+        camera_world_position.x == camera_test_position.x
+        and camera_world_position.y == camera_test_position.y
+        and camera_world_position.z == camera_test_position.z
+    )
     camera_world_rotation = camera_transform.get_world_rotation()
 
     mouse_x, mouse_y = pygame.mouse.get_rel()
