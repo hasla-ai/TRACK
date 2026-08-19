@@ -121,12 +121,16 @@ class Transform:
             math.radians(self.rotation.y)
         )
 
-        return Vector3(
-            rotated[0] + self.position.x,
-            rotated[1] + self.position.y,
-            rotated[2] + self.position.z
+        local_world_point = Vector3(
+        rotated[0] + self.position.x,
+        rotated[1] + self.position.y,
+        rotated[2] + self.position.z
         )
 
+        if self.parent is None:
+            return local_world_point
+
+        return self.parent.transform_point(local_world_point)
 
 font = pygame.font.Font(None, 36)   
 
