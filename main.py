@@ -84,7 +84,7 @@ class Transform:
         self.scale = scale
         self.parent = parent
 
-    def get_world_position(self):
+    def get_world_position(self): # Transform 자체의 World Position을 얻는 API
         if self.parent is None:
             return self.position
         parent_position = self.parent.get_world_position()
@@ -109,7 +109,7 @@ class Transform:
 
         return self.parent.get_world_rotation() + self.rotation
 
-    def transform_point(self, point):
+    def transform_point(self, point):   # 임의의 Local Point를 World로 변환하는 API
         scaled_x = point.x * self.scale.x
         scaled_y = point.y * self.scale.y
         scaled_z = point.z * self.scale.z
@@ -408,14 +408,8 @@ while running:
         player_transform.position.y = 0
         player_vertical_velocity = 0
 
-    camera_world_position = camera_transform.get_world_position()
-    camera_test_position = camera_transform.transform_point(
-        Vector3(0, 0, 0) # Camera의 Local Origin → World를 계산
-    )
-    assert ( # Camera Local Origin -> transform_point -> Parent(Player) -> World Position 경로 확인
-        camera_world_position.x == camera_test_position.x
-        and camera_world_position.y == camera_test_position.y
-        and camera_world_position.z == camera_test_position.z
+    camera_world_position = camera_transform.transform_point(
+    Vector3(0, 0, 0)
     )
     camera_world_rotation = camera_transform.get_world_rotation()
 

@@ -121,3 +121,6 @@ cube_transform.transform_point()
 World Point
     ↓
 world_to_camera() 로 변환
+
+get_world_position() → Transform 자체의 World Position을 얻는 API
+transform_point() → 임의의 Local Point를 World로 변환하는 API
